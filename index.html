@@ -687,8 +687,7 @@
 
           #rm-music-toggle {
             position: relative;
-            top: 0;
-            z-index: 1105;
+            z-index: 3001;
           }
           
           .scene {
@@ -1149,22 +1148,21 @@
 
         #rm-music-player {
             position: fixed;
-            top: 15px;
-            z-index: 1001;
+            inset-block-start: 15px;
+            inset-inline-start: 15px;
+            inset-inline-end: auto;
+            z-index: 3000;
             display: flex;
             align-items: flex-start;
             gap: 10px;
             font-family: 'IBM Plex Mono', monospace;
+            overflow: visible;
+            pointer-events: auto;
         }
 
-        html:not([dir="rtl"]) #rm-music-player {
-            left: 15px;
-            right: auto;
-            flex-direction: row;
-        }
         html[dir="rtl"] #rm-music-player {
-            right: 15px;
-            left: auto;
+            inset-inline-start: auto;
+            inset-inline-end: 15px;
             flex-direction: row-reverse;
         }
 
@@ -1181,7 +1179,8 @@
             justify-content: center;
             transition: all 0.3s ease;
             box-shadow: 0 0 10px rgba(56, 182, 255, 0.2);
-            z-index: 1002;
+            position: relative;
+            z-index: 3001;
         }
 
         #rm-music-toggle:hover {
@@ -1295,12 +1294,15 @@
                 left: 10px;
             }
             
-            html:not([dir="rtl"]) #rm-music-player {
-                left: 10px;
+            #rm-music-player {
+                inset-block-start: max(10px, env(safe-area-inset-top));
+                inset-inline-start: max(10px, env(safe-area-inset-left));
+                inset-inline-end: auto;
             }
             
             html[dir="rtl"] #rm-music-player {
-                right: 10px;
+                inset-inline-start: auto;
+                inset-inline-end: max(10px, env(safe-area-inset-right));
             }
         }
 
@@ -1343,11 +1345,19 @@
           }
 
           #rm-music-player {
-            z-index: 2000;
+            z-index: 3000;
+            inset-block-start: max(12px, env(safe-area-inset-top));
+            inset-inline-start: max(12px, env(safe-area-inset-left));
+            inset-inline-end: auto;
+          }
+
+          html[dir="rtl"] #rm-music-player {
+            inset-inline-start: auto;
+            inset-inline-end: max(12px, env(safe-area-inset-right));
           }
 
           #rm-music-toggle {
-            z-index: 2001;
+            z-index: 3001;
           }
         }
     </style>
