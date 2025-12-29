@@ -1196,6 +1196,52 @@
                 right: 10px;
             }
         }
+
+        /* MOBILE CSS */
+        @media (max-width: 768px) {
+          main {
+            display: grid;
+            grid-template-rows: auto 1fr;
+            grid-template-columns: 1fr;
+            height: 100dvh;
+            align-items: stretch;
+            justify-items: center;
+            padding: 16px 14px 20px;
+          }
+
+          .menu {
+            grid-row: 1;
+            position: sticky;
+            top: 0;
+            width: 100%;
+            margin: 0;
+          }
+
+          .scene {
+            grid-row: 2;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: min(90vw, 420px);
+            height: min(90vw, 420px);
+            max-width: 100%;
+            max-height: 100%;
+            overflow: hidden;
+          }
+
+          .cube {
+            max-width: 100%;
+            max-height: 100%;
+          }
+
+          #rm-music-player {
+            z-index: 2000;
+          }
+
+          #rm-music-toggle {
+            z-index: 2001;
+          }
+        }
     </style>
 </head>
 <body>
