@@ -1710,54 +1710,6 @@
             });
         }
 
-        const projects = document.querySelectorAll('.project-border');
-        let lastPointerType = 'mouse';
-        const clearActiveCards = () => {
-            projects.forEach(p => p.classList.remove('active'));
-        };
-
-        document.addEventListener('pointerdown', (event) => {
-            if (event.pointerType) {
-                lastPointerType = event.pointerType;
-            }
-        }, { passive: true });
-
-        document.addEventListener('touchstart', () => {
-            lastPointerType = 'touch';
-        }, { passive: true });
-
-        if (projects.length) {
-            projects.forEach(project => {
-                project.addEventListener('click', function(event) {
-                    if (lastPointerType !== 'touch') {
-                        return;
-                    }
-
-                    const visitLink = event.target.closest('.visit-app');
-                    const isActive = this.classList.contains('active');
-
-                    if (visitLink) {
-                        if (!isActive) {
-                            event.preventDefault();
-                            clearActiveCards();
-                            this.classList.add('active');
-                        }
-                        return;
-                    }
-
-                    event.preventDefault();
-                    clearActiveCards();
-                    this.classList.add('active');
-                });
-            });
-            
-            document.addEventListener('click', function (event) {
-                if (lastPointerType === 'touch' && !event.target.closest('.project-border')) {
-                    clearActiveCards();
-                }
-            });
-        }
-        
         let touchStartX = 0;
         let touchStartY = 0;
         const scene = document.querySelector('.scene');
@@ -2010,6 +1962,55 @@
             }, 2000);
         }
     })();
+  </script>
+
+  <!-- MOBILE JS -->
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+        const mobileQuery = window.matchMedia('(hover: none) and (pointer: coarse)');
+        if (!mobileQuery.matches) {
+            return;
+        }
+
+        const projects = Array.from(document.querySelectorAll('.project-border'));
+        if (!projects.length) {
+            return;
+        }
+
+        const clearActiveCards = () => {
+            projects.forEach(project => project.classList.remove('active'));
+        };
+
+        projects.forEach(project => {
+            project.addEventListener('click', (event) => {
+                const visitLink = event.target.closest('.visit-app');
+                const isActive = project.classList.contains('active');
+
+                if (visitLink) {
+                    if (!isActive) {
+                        event.preventDefault();
+                        clearActiveCards();
+                        project.classList.add('active');
+                    }
+                    return;
+                }
+
+                event.preventDefault();
+                if (isActive) {
+                    project.classList.remove('active');
+                } else {
+                    clearActiveCards();
+                    project.classList.add('active');
+                }
+            });
+        });
+
+        document.addEventListener('click', (event) => {
+            if (!event.target.closest('.project-border')) {
+                clearActiveCards();
+            }
+        });
+    });
   </script>
 
 </body>
