@@ -76,6 +76,7 @@
           --blue: #38B6FF;
           --chip-image: url("https://lh5.googleusercontent.com/y58mIMZC-IwE41TNehTaXikfD26LtOLULH3BRTAnFxSB33UHwDwf5wVfVvwVwsju1uo=w2400");
           --whiteish-letters: #dafffd;
+          --mobile-menu-height: 0px;
         }
         
         * {
@@ -94,6 +95,7 @@
           min-height: 100vh;
           overflow-x: hidden;
           overflow-y: auto;
+          overscroll-behavior: none;
           -webkit-font-smoothing: antialiased;
         }
         
@@ -235,12 +237,16 @@
           flex-direction: column;
           justify-content: center;
           align-items: center;
-          overflow: auto;
+          overflow-y: auto;
+          overflow-x: hidden;
           overscroll-behavior: contain;
           max-width: 100%;
+          min-width: 0;
+          min-height: 0;
           word-break: break-word;
           overflow-wrap: anywhere;
           scrollbar-width: thin;
+          -webkit-overflow-scrolling: touch;
         }
         
         .cube-face-front {
@@ -635,26 +641,36 @@
         
         @media (max-width: 768px) {
           body {
-            overflow-y: auto;
+            overflow: hidden;
+            height: 100dvh;
           }
           
           main {
             flex-direction: column;
-            padding: 20px 14px 36px;
-            min-height: auto;
-            justify-content: flex-start;
+            padding: calc(var(--mobile-menu-height) + 16px) 14px 20px;
+            min-height: 100dvh;
+            justify-content: center;
             gap: 24px;
           }
           
           .menu {
             width: 100%;
-            max-width: 420px;
-            margin: 0 auto;
-            order: 1;
+            max-width: none;
+            margin: 0;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 1002;
             display: grid;
-            grid-template-columns: repeat(6, minmax(0, 1fr));
-            gap: 12px;
+            grid-template-columns: repeat(3, minmax(0, 1fr));
+            gap: 10px;
             justify-items: center;
+            padding: calc(env(safe-area-inset-top) + 10px) 12px 12px;
+            background: rgba(0, 0, 0, 0.85);
+            border-bottom: 1px solid rgba(56, 182, 255, 0.2);
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.35);
+            backdrop-filter: blur(8px);
           }
           
           .menu > button {
@@ -665,22 +681,14 @@
             font-size: 12px;
             padding-bottom: 2px;
           }
-
-          .menu > button:nth-child(1) { grid-column: 3 / span 2; }
-          .menu > button:nth-child(2) { grid-column: 2 / span 2; }
-          .menu > button:nth-child(3) { grid-column: 4 / span 2; }
-          .menu > button:nth-child(4) { grid-column: 1 / span 2; }
-          .menu > button:nth-child(5) { grid-column: 3 / span 2; }
-          .menu > button:nth-child(6) { grid-column: 5 / span 2; }
           
           .scene {
-            order: 2;
             width: 90vw;
             height: 90vw;
             max-width: 400px;
             max-height: 400px;
             perspective: 1200px;
-            margin: 12px auto 0;
+            margin: 0 auto;
           }
           
           .cube {
@@ -837,7 +845,7 @@
           }
           
           .menu {
-            grid-template-columns: repeat(6, minmax(0, 1fr));
+            grid-template-columns: repeat(3, minmax(0, 1fr));
             gap: 10px;
           }
           
@@ -1005,7 +1013,7 @@
             position: fixed;
             top: 15px;
             right: 15px;
-            z-index: 1000;
+            z-index: 1003;
             padding: 8px 12px;
             background-color: var(--blue);
             color: white;
@@ -1702,22 +1710,29 @@
             });
         }
 
-        const isTouchContext = () => {
-            return window.matchMedia('(pointer: coarse)').matches
-                || window.matchMedia('(hover: none)').matches
-                || 'ontouchstart' in window
-                || navigator.maxTouchPoints > 0
-                || navigator.msMaxTouchPoints > 0;
-        }
-        
-        if (isTouchContext()) {
-            const projects = document.querySelectorAll('.project-border');
-            const clearActiveCards = () => {
-                projects.forEach(p => p.classList.remove('active'));
-            };
+        const projects = document.querySelectorAll('.project-border');
+        let lastPointerType = 'mouse';
+        const clearActiveCards = () => {
+            projects.forEach(p => p.classList.remove('active'));
+        };
 
+        document.addEventListener('pointerdown', (event) => {
+            if (event.pointerType) {
+                lastPointerType = event.pointerType;
+            }
+        }, { passive: true });
+
+        document.addEventListener('touchstart', () => {
+            lastPointerType = 'touch';
+        }, { passive: true });
+
+        if (projects.length) {
             projects.forEach(project => {
                 project.addEventListener('click', function(event) {
+                    if (lastPointerType !== 'touch') {
+                        return;
+                    }
+
                     const visitLink = event.target.closest('.visit-app');
                     const isActive = this.classList.contains('active');
 
@@ -1737,53 +1752,71 @@
             });
             
             document.addEventListener('click', function (event) {
-                if (!event.target.closest('.project-border')) {
+                if (lastPointerType === 'touch' && !event.target.closest('.project-border')) {
                     clearActiveCards();
                 }
             });
-            
-            let touchStartX = 0;
-            let touchStartY = 0;
-            const scene = document.querySelector('.scene');
-            
-            if (scene) {
-                scene.addEventListener('touchstart', function(e) {
-                    touchStartX = e.touches[0].clientX;
-                    touchStartY = e.touches[0].clientY;
-                }, { passive: true });
-                
-                scene.addEventListener('touchend', function(e) {
-                    const touchEndX = e.changedTouches[0].clientX;
-                    const touchEndY = e.changedTouches[0].clientY;
-                    const diffX = touchStartX - touchEndX;
-                    const diffY = touchStartY - touchEndY;
-                    
-                    if (Math.abs(diffX) > 30 || Math.abs(diffY) > 30) {
-                        const currentSide = cube.dataset.side;
-                        const sides = ['front', 'right', 'back', 'left', 'top', 'bottom'];
-                        const currentIndex = sides.indexOf(currentSide);
-                        let nextIndex;
-                        
-                        if (Math.abs(diffX) > Math.abs(diffY)) {
-                            if (diffX > 0) {
-                                nextIndex = (currentIndex + 1) % sides.length;
-                            } else {
-                                nextIndex = (currentIndex - 1 + sides.length) % sides.length;
-                            }
-                        } else {
-                            if (diffY > 0) {
-                                nextIndex = (currentIndex + 1) % sides.length;
-                            } else {
-                                nextIndex = (currentIndex - 1 + sides.length) % sides.length;
-                            }
-                        }
-                        
-                        const nextSide = sides[nextIndex];
-                        document.querySelector(`.btn[data-side="${nextSide}"]`).click();
-                    }
-                }, { passive: true });
-            }
         }
+        
+        let touchStartX = 0;
+        let touchStartY = 0;
+        const scene = document.querySelector('.scene');
+        
+        if (scene) {
+            scene.addEventListener('touchstart', function(e) {
+                touchStartX = e.touches[0].clientX;
+                touchStartY = e.touches[0].clientY;
+            }, { passive: true });
+            
+            scene.addEventListener('touchend', function(e) {
+                const touchEndX = e.changedTouches[0].clientX;
+                const touchEndY = e.changedTouches[0].clientY;
+                const diffX = touchStartX - touchEndX;
+                const diffY = touchStartY - touchEndY;
+                
+                if (Math.abs(diffX) > 30 || Math.abs(diffY) > 30) {
+                    const currentSide = cube.dataset.side;
+                    const sides = ['front', 'right', 'back', 'left', 'top', 'bottom'];
+                    const currentIndex = sides.indexOf(currentSide);
+                    let nextIndex;
+                    
+                    if (Math.abs(diffX) > Math.abs(diffY)) {
+                        if (diffX > 0) {
+                            nextIndex = (currentIndex + 1) % sides.length;
+                        } else {
+                            nextIndex = (currentIndex - 1 + sides.length) % sides.length;
+                        }
+                    } else {
+                        if (diffY > 0) {
+                            nextIndex = (currentIndex + 1) % sides.length;
+                        } else {
+                            nextIndex = (currentIndex - 1 + sides.length) % sides.length;
+                        }
+                    }
+                    
+                    const nextSide = sides[nextIndex];
+                    document.querySelector(`.btn[data-side="${nextSide}"]`).click();
+                }
+            }, { passive: true });
+        }
+
+        const menuEl = document.querySelector('.menu');
+        const setMobileMenuHeight = () => {
+            if (!menuEl) return;
+            if (!window.matchMedia('(max-width: 768px)').matches) {
+                document.documentElement.style.setProperty('--mobile-menu-height', '0px');
+                return;
+            }
+            const height = Math.ceil(menuEl.getBoundingClientRect().height);
+            document.documentElement.style.setProperty('--mobile-menu-height', `${height}px`);
+        };
+
+        setMobileMenuHeight();
+        let menuHeightTimer;
+        window.addEventListener('resize', () => {
+            clearTimeout(menuHeightTimer);
+            menuHeightTimer = setTimeout(setMobileMenuHeight, 150);
+        });
 
         const langSwitcher = document.getElementById('lang-switcher');
         const htmlEl = document.documentElement;
@@ -1798,6 +1831,7 @@
                 }
                 
                 localStorage.setItem('site-lang', htmlEl.lang);
+                setTimeout(setMobileMenuHeight, 50);
             });
         }
         
@@ -1806,6 +1840,7 @@
             htmlEl.lang = savedLang;
             htmlEl.dir = savedLang === 'fa' ? 'rtl' : 'ltr';
         }
+        setTimeout(setMobileMenuHeight, 50);
         
         const aiPreloader = document.getElementById('ai-preloader');
         if (aiPreloader && window.innerWidth <= 768) {
