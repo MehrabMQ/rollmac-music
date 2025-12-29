@@ -849,6 +849,66 @@
             font-size: 1.5rem;
           }
         }
+
+        /* MOBILE CSS */
+        @media (max-width: 768px) {
+          .cube-face-content {
+            padding: 20px 18px;
+          }
+
+          .intro-wrapper {
+            flex-direction: column;
+            text-align: center;
+          }
+
+          .intro {
+            width: 100%;
+            margin: 16px 0 0;
+          }
+
+          html[dir="rtl"] .intro {
+            margin-right: 0;
+          }
+
+          .work-edu-section {
+            padding: 0 6px;
+          }
+
+          .work-edu-info {
+            width: 100%;
+            margin: 10px 0 0;
+          }
+
+          html[dir="rtl"] .work-edu-info {
+            margin-right: 0;
+          }
+
+          .work-edu-heading.date {
+            width: auto;
+          }
+        }
+
+        @media (max-width: 480px) {
+          .intro-heading {
+            font-size: 1.7rem;
+          }
+
+          .image {
+            width: 110px;
+            height: 110px;
+          }
+
+          .image-wrapper {
+            width: 100px;
+            height: 100px;
+          }
+
+          .menu > button {
+            height: 40px;
+            font-size: 12px;
+            letter-spacing: 0.3px;
+          }
+        }
         
         @media (max-width: 480px) {
           .scene {
@@ -1921,6 +1981,39 @@
             setTimeout(function() {
                 window.scrollTo(0, 0);
             }, 100);
+        });
+    });
+  </script>
+
+  <!-- MOBILE JS -->
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+        const cube = document.getElementById('cube');
+        if (!cube) return;
+
+        const scrollActiveFaceToTop = () => {
+            if (!window.matchMedia('(max-width: 768px)').matches) {
+                return;
+            }
+
+            const activeSide = cube.dataset.side;
+            const activeFace = activeSide
+                ? cube.querySelector(`.cube-face-${activeSide} .cube-face-content`)
+                : null;
+
+            if (activeFace) {
+                activeFace.scrollTop = 0;
+            }
+        };
+
+        document.querySelectorAll('.btn').forEach(btn => {
+            btn.addEventListener('click', () => {
+                setTimeout(scrollActiveFaceToTop, 350);
+            });
+        });
+
+        window.addEventListener('orientationchange', () => {
+            setTimeout(scrollActiveFaceToTop, 450);
         });
     });
   </script>
