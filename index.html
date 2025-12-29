@@ -640,6 +640,7 @@
         }
         
         @media (max-width: 768px) {
+          /* MOBILE CSS */
           body {
             overflow: hidden;
             height: 100dvh;
@@ -712,6 +713,13 @@
           .cube-face-content {
             padding: 20px 15px;
             justify-content: flex-start;
+            overflow-y: auto;
+            overflow-x: hidden;
+            overscroll-behavior: contain;
+            -webkit-overflow-scrolling: touch;
+            max-width: 100%;
+            word-break: break-word;
+            overflow-wrap: anywhere;
           }
           
           .cube-face-front { transform: rotateY(0deg) translateZ(45vw); justify-content: center !important; }
