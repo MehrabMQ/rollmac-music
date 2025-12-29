@@ -2120,8 +2120,8 @@
   <!-- MOBILE JS -->
   <script>
     document.addEventListener('DOMContentLoaded', () => {
-        const mobileQuery = window.matchMedia('(hover: none) and (pointer: coarse)');
-        if (!mobileQuery.matches) {
+        const touchQuery = window.matchMedia('(hover: none) and (pointer: coarse)');
+        if (!touchQuery.matches) {
             return;
         }
 
@@ -2134,35 +2134,48 @@
             projects.forEach(project => project.classList.remove('active'));
         };
 
-        projects.forEach(project => {
-            project.addEventListener('click', (event) => {
-                const visitLink = event.target.closest('.visit-app');
-                const isActive = project.classList.contains('active');
+        const handleProjectTap = (event) => {
+            if (!touchQuery.matches) {
+                return;
+            }
 
-                if (visitLink) {
-                    if (!isActive) {
-                        event.preventDefault();
-                        clearActiveCards();
-                        project.classList.add('active');
-                    }
-                    return;
-                }
+            const project = event.currentTarget;
+            const visitLink = event.target.closest('.visit-app');
+            const isActive = project.classList.contains('active');
 
-                event.preventDefault();
-                if (isActive) {
-                    project.classList.remove('active');
-                } else {
+            if (visitLink) {
+                if (!isActive) {
+                    event.preventDefault();
                     clearActiveCards();
                     project.classList.add('active');
                 }
-            });
-        });
+                return;
+            }
 
-        document.addEventListener('click', (event) => {
+            event.preventDefault();
+            if (isActive) {
+                project.classList.remove('active');
+            } else {
+                clearActiveCards();
+                project.classList.add('active');
+            }
+        };
+
+        const handleOutsideTap = (event) => {
+            if (!touchQuery.matches) {
+                return;
+            }
+
             if (!event.target.closest('.project-border')) {
                 clearActiveCards();
             }
+        };
+
+        projects.forEach(project => {
+            project.addEventListener('click', handleProjectTap);
         });
+
+        document.addEventListener('click', handleOutsideTap);
     });
   </script>
 
