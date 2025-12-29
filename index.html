@@ -659,15 +659,17 @@
             max-width: none;
             margin: 0;
             position: fixed;
-            top: 0;
-            left: 0;
-            right: 0;
+            inset-block-start: 0;
+            inset-inline: 0;
             z-index: 1002;
             display: grid;
             grid-template-columns: repeat(3, minmax(0, 1fr));
-            gap: 10px;
+            column-gap: 12px;
+            row-gap: 10px;
             justify-items: center;
-            padding: calc(env(safe-area-inset-top) + 10px) 12px 12px;
+            align-items: center;
+            padding-block: calc(env(safe-area-inset-top) + 10px) 12px;
+            padding-inline: 12px;
             background: rgba(0, 0, 0, 0.85);
             border-bottom: 1px solid rgba(56, 182, 255, 0.2);
             box-shadow: 0 10px 25px rgba(0, 0, 0, 0.35);
@@ -920,7 +922,8 @@
           
           .menu {
             grid-template-columns: repeat(3, minmax(0, 1fr));
-            gap: 10px;
+            column-gap: 10px;
+            row-gap: 8px;
           }
           
           .menu > button {
@@ -976,6 +979,20 @@
             font-size: 1rem;
           }
         }
+
+        @media (max-width: 390px) {
+          .menu {
+            column-gap: 9px;
+            row-gap: 8px;
+            padding-block: calc(env(safe-area-inset-top) + 8px) 10px;
+            padding-inline: 10px;
+          }
+
+          .menu > button {
+            max-width: 115px;
+            font-size: 10px;
+          }
+        }
         
         @media (max-width: 360px) {
           .scene {
@@ -985,6 +1002,13 @@
             max-height: 320px;
           }
           
+          .menu {
+            column-gap: 8px;
+            row-gap: 8px;
+            padding-block: calc(env(safe-area-inset-top) + 8px) 10px;
+            padding-inline: 10px;
+          }
+
           .menu > button {
             height: 34px;
             max-width: 110px;
@@ -1024,15 +1048,24 @@
           
           .menu {
             width: 100%;
-            max-width: 420px;
+            max-width: 520px;
             order: 1;
             display: grid;
             grid-template-columns: repeat(6, minmax(0, 1fr));
+            column-gap: 10px;
+            row-gap: 8px;
+            position: fixed;
+            inset-block-start: 0;
+            inset-inline: 0;
+            margin-inline: auto;
+            padding-block: calc(env(safe-area-inset-top) + 8px) 10px;
+            padding-inline: 10px;
           }
           
           .menu > button {
             margin: 0;
             height: 38px;
+            max-width: 120px;
           }
           
           .scene {
@@ -1285,10 +1318,11 @@
 
           .menu {
             grid-row: 1;
-            position: sticky;
-            top: 0;
             width: 100%;
             margin: 0;
+            inset-block-start: 0;
+            inset-inline: 0;
+            margin-inline: auto;
           }
 
           .scene {
