@@ -85,12 +85,13 @@ ini_set('display_startup_errors', '1');
 if (!file_exists('madeline.php')) {
   copy('https://phar.madelineproto.xyz/madeline.php', 'madeline.php');
 }
-include 'madeline.php';
+require_once 'madeline.php';
 include 'jdf.php';
 
 use \danog\MadelineProto\API;
 use \danog\Loop\Generic\GenericLoop;
 use \danog\MadelineProto\EventHandler;
+use \danog\MadelineProto\Settings;
 use \danog\MadelineProto\Shutdown;
 
 class XHandler extends EventHandler
@@ -8250,7 +8251,7 @@ V - 6
 }
 $settings['db']['type'] = 'memory';
 
-$settings = [
+$legacySettings = [
   'serialization' => [
     'cleanup_before_serialization' => true,
   ],
@@ -8272,6 +8273,9 @@ $settings = [
         ]
     ] 
 ];
+
+$settings = new Settings;
+$settings->merge($legacySettings);
 
 $bot = new \danog\MadelineProto\API('X.session', $settings);
 $bot->startAndLoop(XHandler::class);
