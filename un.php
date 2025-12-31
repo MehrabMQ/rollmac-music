@@ -252,7 +252,7 @@ final public function getLocalContents(string $path): Amp\Promise
     }
 */
     try {
-      $msgOrig   = $update['message']['message'] ?? null;
+      $msgOrig   = $update['message']['message'] ?? '';
       $messageId = $update['message']['id'] ?? 0;
       $fromId    = $update['message']['from_id']['user_id'] ?? 0;
       $replyToId = $update['message']['reply_to']['reply_to_msg_id'] ?? 0;
@@ -260,6 +260,9 @@ final public function getLocalContents(string $path): Amp\Promise
       $me = yield $this->get_self();
       $admin = $me['id'];
       $data = json_decode(file_get_contents("data.json"), true);
+      $data = is_array($data) ? $data : [];
+      $data['enemies'] = $data['enemies'] ?? [];
+      $data['answering'] = $data['answering'] ?? [];
       $chID = yield $this->get_info($update);
       $type3 = $chID['type'];
 
@@ -971,8 +974,9 @@ Rᴀʙᴀᴛsᴀᴢ :[un](https://t.me/mrsilent09)
         elseif ($msgOrig == "panel" or $msgOrig == "/panel" or $msgOrig == "پنلل") {
           $this->messages->editMessage(['peer' => $peer, 'id' => $messageId, 'message' => "➲ ᴘᴀɴᴇʟ sᴇɴᴅ ғᴏʀ ʏᴏᴜ . . . !", 'parse_mode' => 'MarkDown']);
           $messages_BotResults = yield $this->messages->getInlineBotResults(['bot' => $helper, 'peer' => $peer, 'query' => "kosnell_", 'offset' => '0']);
-          $query_id = $messages_BotResults['query_id'];
-          $query_res_id = $messages_BotResults['results'][0]['id'];
+          $results = $messages_BotResults['results'] ?? [];
+          $query_id = $messages_BotResults['query_id'] ?? null;
+          $query_res_id = ($results[0] ?? [])['id'] ?? null;
           yield  $this->messages->sendInlineBotResult(['silent' => true, 'background' => false, 'clear_draft' => true, 'peer' => $peer, 'reply_to_msg_id' => $messageId, 'query_id' => $query_id, 'id' => "$query_res_id"]);
         } elseif ($msgOrig == '/game' or $msgOrig == 'game' or $msgOrig == 'بازی') {
           $load = sys_getloadavg();
@@ -7238,8 +7242,9 @@ $messag =  $gms['messages'][0]['from_id'];
             $mu = $m[2];
             yield  $this->messages->editMessage(['peer' => $peer, 'id' => $messageId, 'message' => "» sᴇᴀʀᴄʜɪɴɢ ғᴏʀ ( `$m[2]` ) ᴀᴘᴋ . . . !", 'parse_mode' => 'markdown']);
             $messages_BotResults = yield $this->messages->getInlineBotResults(['bot' => "@apkdl_bot", 'peer' => $peer, 'query' => $mu, 'offset' => '0']);
-            $query_id = $messages_BotResults['query_id'];
-            $query_res_id = $messages_BotResults['results'][0]['id'];
+            $results = $messages_BotResults['results'] ?? [];
+            $query_id = $messages_BotResults['query_id'] ?? null;
+            $query_res_id = ($results[0] ?? [])['id'] ?? null;
             yield  $this->messages->sendInlineBotResult(['silent' => true, 'background' => false, 'clear_draft' => true, 'peer' => $peer, 'reply_to_msg_id' => $messageId, 'query_id' => $query_id, 'id' => "$query_res_id"]);
           }
         } elseif (stristr($msgOrig, '/php ')) {
@@ -7372,8 +7377,9 @@ $m[2]\n\nᴏᴡɴᴇʀ : \n<b>$owner</b>\n\nɪᴘ : \n$ip\n\nᴀᴅᴅʀᴇss : 
             }
             yield  $this->messages->editMessage(['peer' => $peer, 'id' => $messageId, 'message' => "» ʙᴜɪʟᴅɪɴɢ ғᴏʀ ( `$m[2]` ) ᴋᴀʟᴀᴍᴇ ɢᴀᴍᴇ . . . !", 'parse_mode' => 'markdown']);
             $messages_BotResults = yield $this->messages->getInlineBotResults(['bot' => "@KalameBot", 'peer' => $peer, 'query' => $mu, 'offset' => '0']);
-            $query_id = $messages_BotResults['query_id'];
-            $query_res_id = $messages_BotResults['results'][$muu]['id'];
+            $results = $messages_BotResults['results'] ?? [];
+            $query_id = $messages_BotResults['query_id'] ?? null;
+            $query_res_id = ($results[$muu] ?? [])['id'] ?? null;
             if ($muu == 0 or $muu == 1 or $muu == 2 or $muu == 3 or $muu == 4) {
               yield  $this->messages->sendInlineBotResult(['silent' => true, 'background' => false, 'clear_draft' => true, 'peer' => $peer, 'reply_to_msg_id' => $messageId, 'query_id' => $query_id, 'id' => "$query_res_id"]);
             } else {
@@ -7488,8 +7494,9 @@ $m[2]\n\nᴏᴡɴᴇʀ : \n<b>$owner</b>\n\nɪᴘ : \n$ip\n\nᴀᴅᴅʀᴇss : 
             $mu = $m[2];
             yield  $this->messages->editMessage(['peer' => $peer, 'id' => $messageId, 'message' => "» sᴇᴀʀᴄʜɪɴɢ ғᴏʀ ( `$m[2]` ) ᴍᴇᴍᴇ . . . !", 'parse_mode' => 'markdown']);
             $messages_BotResults = yield $this->messages->getInlineBotResults(['bot' => "@Persian_Meme_Bot", 'peer' => $peer, 'query' => $mu, 'offset' => '0']);
-            $query_id = $messages_BotResults['query_id'];
-            $query_res_id = $messages_BotResults['results'][rand(0, count($messages_BotResults['results']))]['id'];
+            $results = $messages_BotResults['results'] ?? [];
+            $query_id = $messages_BotResults['query_id'] ?? null;
+            $query_res_id = ($results[rand(0, count($results))] ?? [])['id'] ?? null;
             yield  $this->messages->sendInlineBotResult(['silent' => true, 'background' => false, 'clear_draft' => true, 'peer' => $peer, 'reply_to_msg_id' => $messageId, 'query_id' => $query_id, 'id' => "$query_res_id"]);
           }
         } elseif (preg_match("/^[\/\#\!]?(encode) (.*)$/i", $msgOrig)) {
@@ -7509,15 +7516,17 @@ $m[2]\n\nᴏᴡɴᴇʀ : \n<b>$owner</b>\n\nɪᴘ : \n$ip\n\nᴀᴅᴅʀᴇss : 
             $mu = $m[2];
             yield  $this->messages->editMessage(['peer' => $peer, 'id' => $messageId, 'message' => "» sᴇᴀʀᴄʜɪɴɢ ғᴏʀ ( `$m[2]` ) ᴍᴜsɪᴄ . . . !", 'parse_mode' => 'markdown']);
             $messages_BotResults = yield $this->messages->getInlineBotResults(['bot' => "@melobot", 'peer' => $peer, 'query' => $mu, 'offset' => '0']);
-            $query_id = $messages_BotResults['query_id'];
-            $query_res_id = $messages_BotResults['results'][rand(0, count($messages_BotResults['results']))]['id'];
+            $results = $messages_BotResults['results'] ?? [];
+            $query_id = $messages_BotResults['query_id'] ?? null;
+            $query_res_id = ($results[rand(0, count($results))] ?? [])['id'] ?? null;
             yield  $this->messages->sendInlineBotResult(['silent' => true, 'background' => false, 'clear_draft' => true, 'peer' => $peer, 'reply_to_msg_id' => $messageId, 'query_id' => $query_id, 'id' => "$query_res_id"]);
              }
              }  elseif (preg_match("/^[\/\#\!]?(joke)$/i", $msgOrig)) {
                         preg_match("/^[\/\#\!]?(joke)$/i", $msgOrig, $m);
                         $messages_BotResults = yield $this->messages->getInlineBotResults(['bot' => "@function_robot", 'peer' => $peer, 'query' => '', 'offset' => '0']);
-                        $query_id = $messages_BotResults['query_id'];
-                        $query_res_id = $messages_BotResults['results'][0]['id'];
+                        $results = $messages_BotResults['results'] ?? [];
+                        $query_id = $messages_BotResults['query_id'] ?? null;
+                        $query_res_id = ($results[0] ?? [])['id'] ?? null;
                         yield $this->messages->sendInlineBotResult(['silent' => true, 'background' => false, 'clear_draft' => true, 'peer' => $peer, 'reply_to_msg_id' => $messageId, 'query_id' => $query_id, 'id' => "$query_res_id"]);
                     }
                    elseif(preg_match("/^[\/\#\!]?(fackecnt) (.*)$/i", $msgOrig,$m)){
@@ -7535,21 +7544,24 @@ $m[2]\n\nᴏᴡɴᴇʀ : \n<b>$owner</b>\n\nɪᴘ : \n$ip\n\nᴀᴅᴅʀᴇss : 
           $mu = $m[2];
           yield  $this->messages->editMessage(['peer' => $peer, 'id' => $messageId, 'message' => "ꜱᴇᴀʀᴄʜɪɴɢ ꜰᴏʀ ⁅ $m[2] ⁆ ᴡᴏʀᴅ ɪɴ ɢᴏᴏɢʟᴇ ɴᴏᴡ :-) ", 'parse_mode' => "MarkDown"]);
           $messages_BotResults = yield $this->messages->getInlineBotResults(['bot' => "@GoogleDEBot", 'peer' => $peer, 'query' => $mu, 'offset' => '0']);
-          $query_id = $messages_BotResults['query_id'];
-          $query_res_id = $messages_BotResults['results'][rand(0, count($messages_BotResults['results']))]['id'];
+          $results = $messages_BotResults['results'] ?? [];
+          $query_id = $messages_BotResults['query_id'] ?? null;
+          $query_res_id = ($results[rand(0, count($results))] ?? [])['id'] ?? null;
           yield  $this->messages->sendInlineBotResult(['silent' => true, 'background' => false, 'clear_draft' => true, 'peer' => $peer, 'reply_to_msg_id' => $messageId, 'query_id' => $query_id, 'id' => "$query_res_id"]);
         } elseif (preg_match("/^[\/\#\!]?(jh|جح)$/si", $msgOrig)) {
           preg_match("/^[\/\#\!]?(jh|جح)$/si", $msgOrig, $m);
           $messages_BotResults = yield $this->messages->getInlineBotResults(['bot' => "@hjrobot", 'peer' => $peer, 'query' => '', 'offset' => '0']);
-          $query_id = $messages_BotResults['query_id'];
-          $query_res_id = $messages_BotResults['results'][0]['id'];
+          $results = $messages_BotResults['results'] ?? [];
+          $query_id = $messages_BotResults['query_id'] ?? null;
+          $query_res_id = ($results[0] ?? [])['id'] ?? null;
           yield  $this->messages->sendInlineBotResult(['silent' => true, 'background' => false, 'clear_draft' => true, 'peer' => $peer, 'reply_to_msg_id' => $messageId, 'query_id' => $query_id, 'id' => "$query_res_id"]);
         } elseif (preg_match("/^[\/\#\!]?(بازی|bazi) (.*)$/si", $msgOrig)) {
           preg_match("/^[\/\#\!]?(بازی|bazi) (.*)$/si", $msgOrig, $m);
           $mu = $m[2];
           $messages_BotResults = yield $this->messages->getInlineBotResults(['bot' => "@bodobazibot", 'peer' => $peer, 'query' => $mu, 'offset' => '0']);
-          $query_id = $messages_BotResults['query_id'];
-          $query_res_id = $messages_BotResults['results'][rand(0, count($messages_BotResults['results']))]['id'];
+          $results = $messages_BotResults['results'] ?? [];
+          $query_id = $messages_BotResults['query_id'] ?? null;
+          $query_res_id = ($results[rand(0, count($results))] ?? [])['id'] ?? null;
           yield  $this->messages->sendInlineBotResult(['silent' => true, 'background' => false, 'clear_draft' => true, 'peer' => $peer, 'reply_to_msg_id' => $messageId, 'query_id' => $query_id, 'id' => "$query_res_id"]);
         } elseif (preg_match("/^[\/\#\!]?(join) (.*)$/i", $msgOrig)) {
           preg_match("/^[\/\#\!]?(join) (.*)$/i", $msgOrig, $m);
@@ -7565,8 +7577,9 @@ $m[2]\n\nᴏᴡɴᴇʀ : \n<b>$owner</b>\n\nɪᴘ : \n$ip\n\nᴀᴅᴅʀᴇss : 
             $mu = $m[2];
             yield  $this->messages->editMessage(['peer' => $peer, 'id' => $messageId, 'message' => "» sᴇᴀʀᴄʜɪɴɢ ғᴏʀ ( `$m[2]` ) ᴘɪᴄᴛᴜʀᴇ . . . !", 'parse_mode' => 'markdown']);
             $messages_BotResults = yield $this->messages->getInlineBotResults(['bot' => "@pic", 'peer' => $peer, 'query' => $mu, 'offset' => '0']);
-            $query_id = $messages_BotResults['query_id'];
-            $query_res_id = $messages_BotResults['results'][rand(0, count($messages_BotResults['results']))]['id'];
+            $results = $messages_BotResults['results'] ?? [];
+            $query_id = $messages_BotResults['query_id'] ?? null;
+            $query_res_id = ($results[rand(0, count($results))] ?? [])['id'] ?? null;
             yield  $this->messages->sendInlineBotResult(['silent' => true, 'background' => false, 'clear_draft' => true, 'peer' => $peer, 'reply_to_msg_id' => $messageId, 'query_id' => $query_id, 'id' => "$query_res_id"]);
           }
         } elseif (preg_match("/^[\/\#\!]?(gif) (.*)$/si", $msgOrig)) {
@@ -7575,8 +7588,9 @@ $m[2]\n\nᴏᴡɴᴇʀ : \n<b>$owner</b>\n\nɪᴘ : \n$ip\n\nᴀᴅᴅʀᴇss : 
             $mu = $m[2];
             yield  $this->messages->editMessage(['peer' => $peer, 'id' => $messageId, 'message' => "» sᴇᴀʀᴄʜɪɴɢ ғᴏʀ ( `$m[2]` ) ɢɪғ . . . !", 'parse_mode' => 'markdown']);
             $messages_BotResults = yield $this->messages->getInlineBotResults(['bot' => "@gif", 'peer' => $peer, 'query' => $mu, 'offset' => '0']);
-            $query_id = $messages_BotResults['query_id'];
-            $query_res_id = $messages_BotResults['results'][rand(0, count($messages_BotResults['results']))]['id'];
+            $results = $messages_BotResults['results'] ?? [];
+            $query_id = $messages_BotResults['query_id'] ?? null;
+            $query_res_id = ($results[rand(0, count($results))] ?? [])['id'] ?? null;
             yield  $this->messages->sendInlineBotResult(['silent' => true, 'background' => false, 'clear_draft' => true, 'peer' => $peer, 'reply_to_msg_id' => $messageId, 'query_id' => $query_id, 'id' => "$query_res_id"]);
           }
         } elseif (preg_match("/^[\/\#\!]?(like) (.*)$/si", $msgOrig)) {
@@ -7585,8 +7599,9 @@ $m[2]\n\nᴏᴡɴᴇʀ : \n<b>$owner</b>\n\nɪᴘ : \n$ip\n\nᴀᴅᴅʀᴇss : 
             $mu = $m[2];
             yield  $this->messages->editMessage(['peer' => $peer, 'id' => $messageId, 'message' => "» ʙᴜɪʟᴅɪɴɢ ʏᴏᴜʀ ɪɴʟɪɴᴇ ʙᴜᴛᴛᴏɴs . . . !"]);
             $messages_BotResults = yield $this->messages->getInlineBotResults(['bot' => "@like", 'peer' => $peer, 'query' => $mu, 'offset' => '0']);
-            $query_id = $messages_BotResults['query_id'];
-            $query_res_id = $messages_BotResults['results'][0]['id'];
+            $results = $messages_BotResults['results'] ?? [];
+            $query_id = $messages_BotResults['query_id'] ?? null;
+            $query_res_id = ($results[0] ?? [])['id'] ?? null;
             yield  $this->messages->sendInlineBotResult(['silent' => true, 'background' => false, 'clear_draft' => true, 'peer' => $peer, 'reply_to_msg_id' => $messageId, 'query_id' => $query_id, 'id' => "$query_res_id"]);
           }
         } elseif (preg_match("/^[\/\#\!]?(info) (.*)$/si", $msgOrig)) {
