@@ -10,7 +10,19 @@ function mp_settings($settings)
     }
 
     if (is_array($settings)) {
-        return Settings::fromArray($settings);
+        if (method_exists(Settings::class, 'parseFromLegacyArray')) {
+            return Settings::parseFromLegacyArray($settings);
+        }
+        if (method_exists(Settings::class, 'fromLegacyArray')) {
+            return Settings::fromLegacyArray($settings);
+        }
+        if (method_exists(Settings::class, 'loadFromArray')) {
+            return Settings::loadFromArray($settings);
+        }
+
+        $instance = new Settings();
+        $instance->merge($settings);
+        return $instance;
     }
 
     return $settings;
