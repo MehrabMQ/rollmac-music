@@ -8275,6 +8275,9 @@ $legacySettings = [
 ];
 
 $settings = new Settings;
+if (is_array($settings)) {
+  $settings = \danog\MadelineProto\Settings::fromArray($settings);
+}
 $settings->merge($legacySettings);
 
 $bot = new \danog\MadelineProto\API('X.session', $settings);
