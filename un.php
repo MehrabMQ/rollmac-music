@@ -85,7 +85,10 @@ ini_set('display_startup_errors', '1');
 if (!file_exists('madeline.php')) {
   copy('https://phar.madelineproto.xyz/madeline.php', 'madeline.php');
 }
-require_once 'madeline.php';
+if (!defined('HAD_MADELINE_PHAR')) {
+  require_once 'madeline.php';
+}
+require_once 'mp_patch.php';
 include 'jdf.php';
 
 use \danog\MadelineProto\API;
@@ -8278,7 +8281,7 @@ $settings = new Settings;
 if (is_array($settings)) {
   $settings = \danog\MadelineProto\Settings::fromArray($settings);
 }
-$settings->merge($legacySettings);
+$settings->merge(mp_settings($legacySettings));
 
-$bot = new \danog\MadelineProto\API('X.session', $settings);
+$bot = new \danog\MadelineProto\API('X.session', mp_settings($settings));
 $bot->startAndLoop(XHandler::class);

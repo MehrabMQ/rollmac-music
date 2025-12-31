@@ -3,6 +3,7 @@
 ob_start();
 error_reporting(0);
 date_default_timezone_set('Asia/Tehran');
+require_once 'mp_patch.php';
 
 $Sudo ="6876561727";
 define('API_KEY','8558496344:AAHbdYTPUGIVhHqAkcjhROarI0A-EAYxNHU');
