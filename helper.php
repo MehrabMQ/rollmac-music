@@ -21,25 +21,25 @@ $botname = getMe() -> result -> first_name;
 $botusername = getMe() -> result -> username;
 
 $update = json_decode(file_get_contents('php://input'));
-$message = $update->message;
-$chat_id = $message->chat->id;
-$message_id = $message->message_id;
-$from_id = $message->from->id;
-$fromid = $update->callback_query->from->id;
-$firstname = $update->callback_query->from->first_name;
-$textmessage = $message->text;
-$inline = $update->inline_query->query;
-$chatsid = $update->callback_query->from->id;
-$data = $update->callback_query->data;
-$inline_message_id = $update->callback_query->inline_message_id;
-$re_id = $update->message->reply_to_message->from->id;
-$rt = $update->message->reply_to_message;
-$replyid = $update->message->reply_to_message->message_id;
-$edit = $update->edited_message->text;
-$message_edit_id = $update->edited_message->message_id;
-$chat_edit_id = $update->edited_message->chat->id;
-$edit_for_id = $update->edited_message->from->id;
-$membercall = $update->callback_query->id;
+$message = $update->message ?? null;
+$chat_id = $message?->chat?->id;
+$message_id = $message?->message_id;
+$from_id = $message?->from?->id;
+$fromid = $update->callback_query?->from?->id;
+$firstname = $update->callback_query?->from?->first_name;
+$textmessage = $message?->text ?? '';
+$inline = $update->inline_query?->query ?? '';
+$chatsid = $update->callback_query?->from?->id;
+$data = $update->callback_query?->data;
+$inline_message_id = $update->callback_query?->inline_message_id;
+$re_id = $update->message?->reply_to_message?->from?->id;
+$rt = $update->message?->reply_to_message;
+$replyid = $update->message?->reply_to_message?->message_id;
+$edit = $update->edited_message?->text;
+$message_edit_id = $update->edited_message?->message_id;
+$chat_edit_id = $update->edited_message?->chat?->id;
+$edit_for_id = $update->edited_message?->from?->id;
+$membercall = $update->callback_query?->id;
 
 /* Aʜʀɪᴍᴀɴ ᴛᴇᴀᴍ 
 @mrsilent09*/
@@ -63,22 +63,23 @@ $codingmode = file_get_contents("coding.txt");
 $onlinemode = file_get_contents("online.txt");
 $reversemode = file_get_contents("reversemode.txt");
 $dataa = json_decode(file_get_contents("data.json"),true);
-$typing = $dataa['typing'];
-$History= $dataa['History'];
-$game = $dataa['game'];
-$lockpv1= $dataa['lockpv1'];
-$tas= $dataa['tas'];
-$voice = $dataa['voice'];
-$video = $dataa['video'];
-$pokermode = $dataa['poker'];
-$markreadmode = $dataa['markread'];
-$echomode = $dataa['echo'];
-$funnymode = $dataa['funny'];
-$lockgpmode = $dataa['lockgp'];
-$lockpvmode = $dataa['lockpv'];
-$gamepvmode = $dataa['gamepv'];
-$pvtypingmode = $dataa['pvtyping'];
-$photomode = $dataa['photo'];
+$dataa = is_array($dataa) ? $dataa : [];
+$typing = $dataa['typing'] ?? null;
+$History= $dataa['History'] ?? null;
+$game = $dataa['game'] ?? null;
+$lockpv1= $dataa['lockpv1'] ?? null;
+$tas= $dataa['tas'] ?? null;
+$voice = $dataa['voice'] ?? null;
+$video = $dataa['video'] ?? null;
+$pokermode = $dataa['poker'] ?? null;
+$markreadmode = $dataa['markread'] ?? null;
+$echomode = $dataa['echo'] ?? null;
+$funnymode = $dataa['funny'] ?? null;
+$lockgpmode = $dataa['lockgp'] ?? null;
+$lockpvmode = $dataa['lockpv'] ?? null;
+$gamepvmode = $dataa['gamepv'] ?? null;
+$pvtypingmode = $dataa['pvtyping'] ?? null;
+$photomode = $dataa['photo'] ?? null;
 $mem_using = round(memory_get_usage() / 1024 / 1024,1);
 $load = sys_getloadavg();
 
@@ -124,8 +125,10 @@ Mᴀɴᴀɢᴇʀ Pᴀɴᴇʟ Sᴇʟғ
 if($data == "Stats" && $fromid == "$Sudo"){
 
 if (strpos(PHP_OS, 'L') !== false or strpos(PHP_OS, 'l') !== false) { $a = file_get_contents("/proc/meminfo");
- $b = explode('MemTotal:', $a)[1];
- $stats = explode(' kB', $b)[0] / 1024 / 1024;
+ $b = explode('MemTotal:', $a);
+ $b = $b[1] ?? '';
+ $stats = explode(' kB', $b);
+ $stats = ($stats[0] ?? 0) / 1024 / 1024;
 if ($stats != 0) {$mem_total = $stats . 'GB';
 } else { $mem_total = 'No Access';}} else {$mem_total = '!';}
 bot("answerCallbackQuery",["callback_query_id"=>$update->callback_query->id,"text"=>"نویسنده سلف @mrsilent09 🧑‍💻"]);
