@@ -86,7 +86,12 @@ if (!file_exists('madeline.php')) {
   copy('https://phar.madelineproto.xyz/madeline.php', 'madeline.php');
 }
 if (!defined('HAD_MADELINE_PHAR')) {
-  require_once 'madeline.php';
+  $madelinePath = 'madeline.php';
+  $madelineRealPath = realpath($madelinePath) ?: $madelinePath;
+  $includedFiles = array_map('realpath', get_included_files());
+  if (!in_array($madelineRealPath, $includedFiles, true)) {
+    require_once $madelinePath;
+  }
 }
 require_once 'mp_patch.php';
 include 'jdf.php';
@@ -8278,9 +8283,7 @@ $legacySettings = [
 ];
 
 $settings = new Settings;
-if (is_array($settings)) {
-  $settings = \danog\MadelineProto\Settings::fromArray($settings);
-}
+$settings = mp_settings($settings);
 $settings->merge(mp_settings($legacySettings));
 
 $bot = new \danog\MadelineProto\API('X.session', mp_settings($settings));
